@@ -17,5 +17,9 @@ public class Answer {
 
     @Column(name = "text", length = 255, nullable = false)
     private String text;
+
+    @ManyToOne
+    @JoinColumn(name = "suggestion_id", nullable = false)
+    private Suggestion suggestion;
 }
 

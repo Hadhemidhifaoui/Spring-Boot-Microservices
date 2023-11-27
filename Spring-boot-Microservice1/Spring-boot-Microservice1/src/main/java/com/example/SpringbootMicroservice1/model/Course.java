@@ -27,7 +27,7 @@ public class Course
     private Double price;
     @Column(name = "image")
     private String image;
-    @Column(name = "lien", nullable = false)
+    @Column(name = "lien")
     private String lien;
     @Column(name = "create_time", nullable = false)
     private LocalDateTime createTime;

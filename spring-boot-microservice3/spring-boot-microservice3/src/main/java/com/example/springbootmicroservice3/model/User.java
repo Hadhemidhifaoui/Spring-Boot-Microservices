@@ -26,17 +26,17 @@ public class User implements UserDetails
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "name")
+    private String name;
     @Column(name = "username")
     private String username;
-    @Column(name = "email")
-    private String email;
     @Column(name = "password")
     private String password;
-    @Column(name = "password")
+    @Column(name = "phone")
     private String phone;
-    @Column(name = "password")
+    @Column(name = "adresse")
     private String adresse;
-    @Column(name = "password")
+    @Column(name = "image")
     private String image;
     @Column(name = "create_time")
     private LocalDateTime createTime;

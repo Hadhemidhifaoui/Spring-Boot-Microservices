@@ -12,8 +12,8 @@ import java.util.List;
 )
 public interface CourseServiceRequest
 {
-    @PostMapping
-///api/course
+    @PostMapping("save")
+///api/course/save
     Object saveCourse(@RequestBody Object requestBody);
 
     @DeleteMapping("{courseId}")//api/course/{courseId}
@@ -22,4 +22,10 @@ public interface CourseServiceRequest
     @GetMapping
 //api/course
     List<Object> getAllCourses();
+
+    @GetMapping("/{courseId}")
+    Object getCourseById(@PathVariable("courseId") Long courseId);
+
+    @PutMapping("/{courseId}")
+    Object updateCourse(@PathVariable("courseId") Long courseId, @RequestBody Object updatedCourse);
 }

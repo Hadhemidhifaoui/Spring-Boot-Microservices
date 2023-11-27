@@ -19,4 +19,5 @@ public interface UserService
      Optional<User> getUserById(Long userId);
 
     List<User> getUsersByRole(Role role);
+    User updateUser(Long id, User updatedUser);
 }

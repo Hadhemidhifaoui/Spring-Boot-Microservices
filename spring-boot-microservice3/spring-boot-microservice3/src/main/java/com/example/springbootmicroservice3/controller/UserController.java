@@ -44,5 +44,11 @@ public class UserController
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
+        User updatedUserResult = userService.updateUser(id, updatedUser);
+        return ResponseEntity.ok(updatedUserResult);
+    }
+
 
 }

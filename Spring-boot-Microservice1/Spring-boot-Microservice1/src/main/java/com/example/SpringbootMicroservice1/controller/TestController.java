@@ -56,6 +56,19 @@ public class TestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    // Ajoutez d'autres méthodes du contrôleur au besoin
+    @PostMapping("/addTest")
+    public ResponseEntity<Test> addTestWithQuestionsAndAnswers(
+            @RequestParam Long course_id,
+            @RequestParam String testName,
+            @RequestParam String testDescription,
+            @RequestParam List<String> questionContents,
+            @RequestParam List<List<String>> suggestionContents,
+            @RequestParam List<List<String>> reponseContents) {
+
+        Test test = testService.addTestWithQuestionsAndAnswers(
+                course_id, testName, testDescription, questionContents, suggestionContents, reponseContents);
+
+        return ResponseEntity.ok(test);
+    }
 }
 

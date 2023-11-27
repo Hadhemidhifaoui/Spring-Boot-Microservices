@@ -32,4 +32,24 @@ public class CourseController
     {
         return ResponseEntity.ok(courseServiceRequest.getAllCourses());
     }
+
+    @GetMapping("/{courseId}") // gateway/course/{courseId}
+    public ResponseEntity<?> getCourseById(@PathVariable Long courseId) {
+        Object course = courseServiceRequest.getCourseById(courseId);
+        if (course != null) {
+            return ResponseEntity.ok(course);
+        } else {
+            return new ResponseEntity<>("Course not found", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping("/{courseId}") // gateway/course/{courseId}
+    public ResponseEntity<?> updateCourse(@PathVariable Long courseId, @RequestBody Object updatedCourse) {
+        Object course = courseServiceRequest.updateCourse(courseId, updatedCourse);
+        if (course != null) {
+            return ResponseEntity.ok(course);
+        } else {
+            return new ResponseEntity<>("Course not found", HttpStatus.NOT_FOUND);
+        }
+    }
 }

@@ -3,6 +3,7 @@ package com.example.springbootmicroservice3.service;
 import com.example.springbootmicroservice3.model.Role;
 import com.example.springbootmicroservice3.model.User;
 import com.example.springbootmicroservice3.repository.UserRepository;
+import jakarta.ws.rs.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -56,4 +57,26 @@ public class UserServiceImpl implements UserService
     {
         userRepository.updateUserRole(username, newRole);
     }
+
+    @Override
+    public User updateUser(Long id, User updatedUser) {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User not found with id: " + id));
+
+        // Update fields as needed
+        existingUser.setName(updatedUser.getName());
+        existingUser.setUsername(updatedUser.getUsername());
+        existingUser.setPhone(updatedUser.getPhone());
+        existingUser.setAdresse(updatedUser.getAdresse());
+        //existingUser.setImage(updatedUser.getImage());
+
+        // If the password is provided, encode and update it
+        if (updatedUser.getPassword() != null) {
+            existingUser.setPassword(updatedUser.getPassword(), passwordEncoder);
+        }
+
+        // Save the updated user
+        return userRepository.save(existingUser);
+    }
+
 }
