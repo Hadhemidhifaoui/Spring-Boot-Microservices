@@ -1,10 +1,7 @@
 package com.example.SpringbootMicroservice1.service;
 
 import com.example.SpringbootMicroservice1.model.*;
-import com.example.SpringbootMicroservice1.repository.AnswerRepository;
-import com.example.SpringbootMicroservice1.repository.QuestionRepository;
-import com.example.SpringbootMicroservice1.repository.SuggestionRepository;
-import com.example.SpringbootMicroservice1.repository.TestRepository;
+import com.example.SpringbootMicroservice1.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +11,9 @@ import java.util.Optional;
 @Service
 public class TestService {
 
+
+    @Autowired
+    private CourseRepository courseRepository;
     @Autowired
     private TestRepository testRepository;
     @Autowired
@@ -58,30 +58,31 @@ public class TestService {
     public void deleteTest(Long testId) {
         testRepository.deleteById(testId);
     }
-    public Test addTestWithQuestionsAndAnswers(Long courseId, String testName, String testDescription,
+    public Test addTestWithQuestionsAndAnswers(String testName, String testDescription, Long idCourse,
                                                List<String> questionContents, List<List<String>> suggestionContents, List<List<String>> reponseContents) {
+
         Test test = new Test();
+
         test.setName(testName);
         test.setDescription(testDescription);
 
-        // Associez le test au cours
-        Course course = new Course();
-        course.setId(courseId);
-        test.setCourse(course);
+        Course course = null;
+        try {
+            course = courseRepository.findById(idCourse)
+                    .orElseThrow(() -> new Exception("Course not found with ID: " + idCourse));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
-        // Enregistrez le test
-        test = testRepository.save(test);
+
+        test.addCourse(course);//addCourse()
+
+
 
         // Ajoutez les questions, suggestions et réponses
         for (int i = 0; i < questionContents.size(); i++) {
             Question question = new Question();
             question.setText(questionContents.get(i));
-
-            // Ajoutez la question au test
-            test.addQuestion(question);
-
-            // Enregistrez la question
-            question = questionRepository.save(question);
 
             // Ajoutez les suggestions
             List<String> suggestions = suggestionContents.get(i);
@@ -89,11 +90,12 @@ public class TestService {
                 Suggestion suggestion = new Suggestion();
                 suggestion.setText(suggestionContent);
 
+                // Enregistrez la suggestion
+                suggestionRepository.save(suggestion);
+
                 // Ajoutez la suggestion à la question
                 question.addSuggestion(suggestion);
 
-                // Enregistrez la suggestion
-                suggestionRepository.save(suggestion);
             }
 
             // Ajoutez les réponses
@@ -102,15 +104,21 @@ public class TestService {
                 Answer reponse = new Answer();
                 reponse.setText(reponseContent);
 
+                // Enregistrez la réponse
+                reponseRepository.save(reponse);
+
                 // Ajoutez la réponse à la question
                 question.addReponse(reponse);
 
-                // Enregistrez la réponse
-                reponseRepository.save(reponse);
             }
-        }
+            // Enregistrez la question
+            question = questionRepository.save(question);
 
+            // Ajoutez la question au test
+            test.addQuestion(question);
+        }
+        // Enregistrez le test
+        test = testRepository.save(test);
         return test;
     }
 }
-

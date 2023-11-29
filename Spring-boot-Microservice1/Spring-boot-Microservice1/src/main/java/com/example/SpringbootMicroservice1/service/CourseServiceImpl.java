@@ -22,7 +22,6 @@ public class CourseServiceImpl implements CourseService
     public Course saveCourse(Course course)
     {
         course.setCreateTime(LocalDateTime.now());
-
         return courseRepository.save(course);
     }
 
@@ -57,5 +56,18 @@ public class CourseServiceImpl implements CourseService
     public Course findCourseById(Long courseId) {
         Optional<Course> course = courseRepository.findById(courseId);
         return course.orElse(null);
+    }
+    @Override
+    public Course addCourse(String title, String subtitle, String duree, Double price, String image, String lien) {
+        Course newCourse = new Course();
+        newCourse.setTitle(title);
+        newCourse.setSubtitle(subtitle); // Make sure to set the subtitle
+        newCourse.setDuree(duree);
+        newCourse.setPrice(price);
+        newCourse.setImage(image);
+        newCourse.setLien(lien);
+        newCourse.setCreateTime(LocalDateTime.now());
+
+        return courseRepository.save(newCourse);
     }
 }

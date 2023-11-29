@@ -12,14 +12,12 @@ public class Answer {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "question_id", nullable = false)
+    @JoinColumn(name = "question_id", nullable = true)
     private Question question;
 
-    @Column(name = "text", length = 255, nullable = false)
+    @Column(name = "text", length = 255, nullable = true)
     private String text;
 
-    @ManyToOne
-    @JoinColumn(name = "suggestion_id", nullable = false)
-    private Suggestion suggestion;
+
 }
 

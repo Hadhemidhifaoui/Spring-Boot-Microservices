@@ -1,5 +1,6 @@
 package com.example.SpringbootMicroservice1.controller;
 
+import com.example.SpringbootMicroservice1.dto.TestRequest;
 import com.example.SpringbootMicroservice1.model.Test;
 import com.example.SpringbootMicroservice1.service.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,18 +58,18 @@ public class TestController {
     }
 
     @PostMapping("/addTest")
-    public ResponseEntity<Test> addTestWithQuestionsAndAnswers(
-            @RequestParam Long course_id,
-            @RequestParam String testName,
-            @RequestParam String testDescription,
-            @RequestParam List<String> questionContents,
-            @RequestParam List<List<String>> suggestionContents,
-            @RequestParam List<List<String>> reponseContents) {
+    public ResponseEntity<?> addTestWithQuestionsAndAnswers(@RequestBody TestRequest request) {
 
+        String testName= request.getTestName();
+        String testDescription= request.getTestDescription();
+        Long CourseId =request.getCourse_id();
+        List<String> questionContents = request.getQuestionContents();
+        List<List<String>> suggestionContents = request.getSuggestionContents();
+        List<List<String>> reponseContents =request.getReponseContents();
         Test test = testService.addTestWithQuestionsAndAnswers(
-                course_id, testName, testDescription, questionContents, suggestionContents, reponseContents);
+                 testName, testDescription,CourseId , questionContents, suggestionContents, reponseContents);
 
         return ResponseEntity.ok(test);
+
     }
 }
-

@@ -4,7 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.List;
-
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 @Data
 @Entity
 @Table(name = "question")
@@ -12,19 +13,24 @@ public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "test_id", nullable = false)
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @ManyToOne()
+    @JoinColumn(name = "test_id", nullable = true)
     private Test test;
 
-    @Column(name = "text", length = 255, nullable = false)
+    @Column(name = "text", length = 255, nullable = true)
     private String text;
 
-    @Column(name = "type", length = 20, nullable = false)
+    @Column(name = "type", length = 20, nullable = true)
     private String type;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    @Column(name = "answers", nullable = true)
     private List<Answer> answers;
+
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    @Column(name = "suggestions", nullable = true)
     private List<Suggestion> suggestions;
 
     public void addSuggestion(Suggestion suggestion) {
@@ -36,15 +42,6 @@ public class Question {
     public void addReponse(Answer reponse) {
         answers.add(reponse);
         reponse.setQuestion(this);
-    }
-    public void addReponseToSuggestion(Long suggestionId, Answer reponse) {
-        // Trouver la suggestion par son ID
-        Suggestion suggestion = findSuggestionById(suggestionId);
-
-        // Ajouter la réponse à la suggestion
-        if (suggestion != null) {
-            suggestion.addReponse(reponse);
-        }
     }
 
     private Suggestion findSuggestionById(Long suggestionId) {

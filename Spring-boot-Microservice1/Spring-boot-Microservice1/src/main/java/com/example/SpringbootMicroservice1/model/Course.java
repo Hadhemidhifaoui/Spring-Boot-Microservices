@@ -2,6 +2,8 @@ package com.example.SpringbootMicroservice1.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+
 import java.time.Duration;
 
 
@@ -17,18 +19,33 @@ public class Course
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "title", length = 100, nullable = false)
+    @Column(name = "title", length = 100, nullable = true)
     private String title;
 
-    @Column(name = "duree", length = 100, nullable = false)
+    @Column(name = "subtitle", length = 100, nullable = true)
+    private String subtitle;
+
+    @Column(name = "duree", length = 100, nullable = true)
     private  String  duree;
 
-    @Column(name = "price", nullable = false)
+    @Column(name = "price", nullable = true)
     private Double price;
-    @Column(name = "image")
+
+    @Column(name = "image", nullable = true)
     private String image;
-    @Column(name = "lien")
+
+    @Column(name = "lien", nullable = true)
     private String lien;
-    @Column(name = "create_time", nullable = false)
+
+    @OneToOne(mappedBy = "course")
+    private Test test;
+
+    @CreationTimestamp
+    @Column(name = "create_time", nullable = false, updatable = false)
     private LocalDateTime createTime;
+
+    public void addTest(Test test) {
+        this.test = test;
+        test.setCourse(this);
+    }
 }

@@ -4,8 +4,11 @@ package com.example.SpringbootMicroservice1.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.List;
+import java.util.Optional;
 
 @Data
 @Entity
@@ -15,18 +18,19 @@ public class Test {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "course_id", nullable = false)
+    @OneToOne
+    @JoinColumn(name = "test_id", columnDefinition = "BIGINT DEFAULT 1")
     private Course course;
 
-
-
-    @Column(name = "name", length = 100, nullable = false)
+    @Column(name = "name", length = 100, nullable = true)
     private String name;
 
-    @Column(name = "description", length = 255)
+    @Column(name = "description", length = 255, nullable = true)
     private String description;
-    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL)
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @OneToMany(mappedBy = "test")
+    @Column(name = "questions", nullable = true)
     private List<Question> questions;
 
     public void addQuestion(Question question) {
@@ -46,12 +50,12 @@ public class Test {
                 .findFirst()
                 .orElse(null);
     }
-    public void addReponseToSuggestion(Long questionId, Long suggestionId, Answer reponse) {
-        Question question = findQuestionById(questionId);
-        if (question != null) {
-            question.addReponseToSuggestion(suggestionId, reponse);
-        }
+
+    public void addCourse(Course course) {
+        this.course = course;
+        course.setTest(this);
     }
+
 
 
 

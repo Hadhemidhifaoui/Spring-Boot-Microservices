@@ -13,4 +13,6 @@ public interface CourseService
     List<Course> findAllCourses();
     Course updateCourse(Long courseId, Course updatedCourse);
     Course findCourseById(Long courseId);
+
+    Course addCourse(String title, String subtitle, String duree, Double price, String image, String lien);
 }

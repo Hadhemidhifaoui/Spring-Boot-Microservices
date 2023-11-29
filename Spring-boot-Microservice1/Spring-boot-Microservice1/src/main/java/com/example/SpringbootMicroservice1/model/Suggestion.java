@@ -12,18 +12,12 @@ public class Suggestion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
-    @JoinColumn(name = "question_id", nullable = false)
+    @JoinColumn(name = "question_id", nullable = true)
     private Question question;
-    @Column(name = "text", length = 255, nullable = false)
+
+    @Column(name = "text", length = 255, nullable = true)
     private String text;
 
-
-    @OneToMany(mappedBy = "suggestion", cascade = CascadeType.ALL)
-    private List<Answer> reponses;
-
-    public void addReponse(Answer reponse) {
-        reponses.add(reponse);
-        reponse.setSuggestion(this);
-    }
 }

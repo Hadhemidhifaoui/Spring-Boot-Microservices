@@ -57,6 +57,19 @@ public class CourseController
         }
     }
 
+    @PostMapping("/add")
+    public ResponseEntity<Course> addCourse(@RequestBody Course request) {
+        Course newCourse = courseService.addCourse(
+                request.getTitle(),
+                request.getSubtitle(),
+                request.getDuree(),
+                request.getPrice(),
+                request.getImage(),
+                request.getLien()
+        );
+
+        return new ResponseEntity<>(newCourse, HttpStatus.CREATED);
+    }
 
 
 
