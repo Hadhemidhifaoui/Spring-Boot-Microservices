@@ -1,8 +1,11 @@
 package com.example.SpringbootMicroservice1.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -14,10 +17,12 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JdbcTypeCode(SqlTypes.JSON)
+   // @JdbcTypeCode(SqlTypes.JSON)
     @ManyToOne()
     @JoinColumn(name = "test_id", nullable = true)
+    @JsonBackReference
     private Test test;
+
 
     @Column(name = "text", length = 255, nullable = true)
     private String text;
@@ -27,13 +32,23 @@ public class Question {
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     @Column(name = "answers", nullable = true)
+    @JsonIgnore
     private List<Answer> answers;
 
+    /*@OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+
+    private List<Suggestion> suggestions;*/
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     @Column(name = "suggestions", nullable = true)
-    private List<Suggestion> suggestions;
+    @JsonIgnore
+    private List<Suggestion> suggestions = new ArrayList<>();
+
+
 
     public void addSuggestion(Suggestion suggestion) {
+        if (suggestions == null) {
+            suggestions = new ArrayList<>();  // Assurez-vous que la liste est initialisée
+        }
         suggestions.add(suggestion);
         suggestion.setQuestion(this);
     }

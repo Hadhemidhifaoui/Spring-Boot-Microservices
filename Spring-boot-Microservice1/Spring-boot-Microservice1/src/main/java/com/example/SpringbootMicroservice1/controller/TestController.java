@@ -1,5 +1,6 @@
 package com.example.SpringbootMicroservice1.controller;
 
+import com.example.SpringbootMicroservice1.dto.TestQuestionRequest;
 import com.example.SpringbootMicroservice1.dto.TestRequest;
 import com.example.SpringbootMicroservice1.model.Test;
 import com.example.SpringbootMicroservice1.service.TestService;
@@ -40,9 +41,8 @@ public class TestController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Test>> getAllTests() {
-        List<Test> tests = testService.getAllTests();
-        return ResponseEntity.ok(tests);
+    public List<Test> getAllTests() {
+        return testService.getAllTests();
     }
 
     @PostMapping
@@ -57,19 +57,18 @@ public class TestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+
+
     @PostMapping("/addTest")
     public ResponseEntity<?> addTestWithQuestionsAndAnswers(@RequestBody TestRequest request) {
+        String testName = request.getTestName();
+        String testDescription = request.getTestDescription();
+        Long course_id = request.getCourse_id(); // Assurez-vous que le nom du paramètre correspond
 
-        String testName= request.getTestName();
-        String testDescription= request.getTestDescription();
-        Long CourseId =request.getCourse_id();
-        List<String> questionContents = request.getQuestionContents();
-        List<List<String>> suggestionContents = request.getSuggestionContents();
-        List<List<String>> reponseContents =request.getReponseContents();
-        Test test = testService.addTestWithQuestionsAndAnswers(
-                 testName, testDescription,CourseId , questionContents, suggestionContents, reponseContents);
+        List<TestQuestionRequest> questionRequests = request.getQuestions();
+
+        Test test = testService.addTestWithQuestionsAndAnswers(testName, testDescription, course_id, questionRequests);
 
         return ResponseEntity.ok(test);
-
     }
 }

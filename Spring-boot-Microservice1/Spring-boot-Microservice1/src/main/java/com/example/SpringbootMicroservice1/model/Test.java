@@ -1,14 +1,12 @@
 package com.example.SpringbootMicroservice1.model;
 
-
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Data
 @Entity
@@ -18,8 +16,8 @@ public class Test {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "test_id", columnDefinition = "BIGINT DEFAULT 1")
+    @ManyToOne
+    @JoinColumn(name = "course_id", unique = false)
     private Course course;
 
     @Column(name = "name", length = 100, nullable = true)
@@ -28,15 +26,15 @@ public class Test {
     @Column(name = "description", length = 255, nullable = true)
     private String description;
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    @OneToMany(mappedBy = "test")
-    @Column(name = "questions", nullable = true)
-    private List<Question> questions;
+    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Question> questions = new ArrayList<>();
 
     public void addQuestion(Question question) {
         questions.add(question);
         question.setTest(this);
     }
+
     public void addSuggestionToQuestion(Long questionId, Suggestion suggestion) {
         Question question = findQuestionById(questionId);
         if (question != null) {
@@ -53,11 +51,6 @@ public class Test {
 
     public void addCourse(Course course) {
         this.course = course;
-        course.setTest(this);
+        course.getTests().add(this);
     }
-
-
-
-
 }
-

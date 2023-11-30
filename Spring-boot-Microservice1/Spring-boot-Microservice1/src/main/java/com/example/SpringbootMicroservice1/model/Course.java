@@ -8,6 +8,8 @@ import java.time.Duration;
 
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Data
@@ -37,15 +39,21 @@ public class Course
     @Column(name = "lien", nullable = true)
     private String lien;
 
-    @OneToOne(mappedBy = "course")
-    private Test test;
+    /*@OneToOne(mappedBy = "course")
+    private Test test;*/
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    private List<Test> tests = new ArrayList<>();
+
+
 
     @CreationTimestamp
     @Column(name = "create_time", nullable = false, updatable = false)
     private LocalDateTime createTime;
 
     public void addTest(Test test) {
-        this.test = test;
+        tests.add(test);
         test.setCourse(this);
     }
+
+
 }

@@ -2,11 +2,16 @@ package com.example.SpringbootMicroservice1.service;
 
 
 
+import com.example.SpringbootMicroservice1.dto.TestQuestionRequest;
 import com.example.SpringbootMicroservice1.model.Question;
+import com.example.SpringbootMicroservice1.model.Suggestion;
+import com.example.SpringbootMicroservice1.model.Test;
 import com.example.SpringbootMicroservice1.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +20,9 @@ public class QuestionService {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private SuggestionService suggestionService;
 
     public Question updateQuestion(Long questionId, Question updatedQuestion) {
         Optional<Question> existingQuestion = questionRepository.findById(questionId);
@@ -48,6 +56,30 @@ public class QuestionService {
         questionRepository.deleteById(questionId);
     }
 
-    // Ajoutez d'autres méthodes de service au besoin
+    @Transactional
+    public Question createQuestion(Test test, TestQuestionRequest questionRequest) {
+        // Créer une nouvelle question
+        Question question = new Question();
+        question.setText(questionRequest.getQuestionContent());
+        question.setTest(test);
+
+        // Sauvegarder la question
+        question = questionRepository.save(question);
+
+        // Ajouter des suggestions à la question
+        List<Suggestion> suggestions = new ArrayList<>();
+        for (String suggestionContent : questionRequest.getSuggestionContents()) {
+            Suggestion suggestion = new Suggestion();
+            suggestion.setText(suggestionContent);
+            suggestion.setQuestion(question);
+            suggestions.add(suggestionService.addSuggestion(suggestion));
+        }
+
+        // Associer les suggestions à la question
+        question.setSuggestions(suggestions);
+
+        // Retourner la question sauvegardée
+        return question;
+    }
 }
 

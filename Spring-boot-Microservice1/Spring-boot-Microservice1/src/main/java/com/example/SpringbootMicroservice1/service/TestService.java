@@ -1,12 +1,22 @@
 package com.example.SpringbootMicroservice1.service;
 
+
+import com.example.SpringbootMicroservice1.dto.TestQuestionRequest;
 import com.example.SpringbootMicroservice1.model.*;
 import com.example.SpringbootMicroservice1.repository.*;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.PersistenceUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 
 @Service
 public class TestService {
@@ -24,6 +34,11 @@ public class TestService {
 
     @Autowired
     private AnswerRepository reponseRepository;
+    @Autowired
+    private QuestionService questionService;
+
+    @PersistenceUnit
+    private EntityManagerFactory entityManagerFactory;
 
     public Test updateTest(Long testId, Test updatedTest) {
         Optional<Test> existingTest = testRepository.findById(testId);
@@ -33,8 +48,7 @@ public class TestService {
             test.setName(updatedTest.getName());
             test.setDescription(updatedTest.getDescription());
 
-            // Vous pouvez également mettre à jour la liste de chapitres si nécessaire
-            // test.setChapters(updatedTest.getChapters());
+
 
             return testRepository.save(test);
         }
@@ -58,67 +72,36 @@ public class TestService {
     public void deleteTest(Long testId) {
         testRepository.deleteById(testId);
     }
-    public Test addTestWithQuestionsAndAnswers(String testName, String testDescription, Long idCourse,
-                                               List<String> questionContents, List<List<String>> suggestionContents, List<List<String>> reponseContents) {
 
+    @Transactional
+    public Test addTestWithQuestionsAndAnswers(String testName, String testDescription, Long courseId, List<TestQuestionRequest> questionRequests) {
+        // Vérifier si le cours existe
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new EntityNotFoundException("Course with id " + courseId + " not found"));
+
+        // Créer un nouveau test
         Test test = new Test();
-
         test.setName(testName);
         test.setDescription(testDescription);
+        test.setCourse(course);
 
-        Course course = null;
-        try {
-            course = courseRepository.findById(idCourse)
-                    .orElseThrow(() -> new Exception("Course not found with ID: " + idCourse));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+
+
+        // Ajouter des questions au test
+        List<Question> questions = new ArrayList<>();
+        for (TestQuestionRequest questionRequest : questionRequests) {
+            Question question = questionService.createQuestion(test, questionRequest);
+            questions.add(question);
         }
 
+        // Associer les questions au test
+        test.setQuestions(questions);
 
-        test.addCourse(course);//addCourse()
 
-
-
-        // Ajoutez les questions, suggestions et réponses
-        for (int i = 0; i < questionContents.size(); i++) {
-            Question question = new Question();
-            question.setText(questionContents.get(i));
-
-            // Ajoutez les suggestions
-            List<String> suggestions = suggestionContents.get(i);
-            for (String suggestionContent : suggestions) {
-                Suggestion suggestion = new Suggestion();
-                suggestion.setText(suggestionContent);
-
-                // Enregistrez la suggestion
-                suggestionRepository.save(suggestion);
-
-                // Ajoutez la suggestion à la question
-                question.addSuggestion(suggestion);
-
-            }
-
-            // Ajoutez les réponses
-            List<String> reponses = reponseContents.get(i);
-            for (String reponseContent : reponses) {
-                Answer reponse = new Answer();
-                reponse.setText(reponseContent);
-
-                // Enregistrez la réponse
-                reponseRepository.save(reponse);
-
-                // Ajoutez la réponse à la question
-                question.addReponse(reponse);
-
-            }
-            // Enregistrez la question
-            question = questionRepository.save(question);
-
-            // Ajoutez la question au test
-            test.addQuestion(question);
-        }
-        // Enregistrez le test
+        // Sauvegarder le test
         test = testRepository.save(test);
         return test;
     }
+
+
 }

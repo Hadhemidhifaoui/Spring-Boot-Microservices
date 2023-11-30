@@ -8,10 +8,16 @@ public class TestRequest {
     private String testName;
     private String testDescription;
     private Long course_id;
+
     private List<String> questionContents;
     private List<List<String>> suggestionContents;
     private List<List<String>> reponseContents;
+    private List<TestQuestionRequest> questions;
 
-    // getters and setters
+    public List<TestQuestionRequest> getQuestions() {
+        return questions;
+    }
+
+
 }
 
