@@ -45,6 +45,7 @@ public class TestController {
         return testService.getAllTests();
     }
 
+
     @PostMapping
     public ResponseEntity<Test> saveTest(@RequestBody Test test) {
         Test savedTest = testService.saveTest(test);
@@ -71,4 +72,16 @@ public class TestController {
 
         return ResponseEntity.ok(test);
     }
+
+    @GetMapping("/byCourse/{courseId}")
+    public ResponseEntity<List<Test>> getTestsByCourse(@PathVariable Long courseId) {
+        List<Test> tests = testService.getTestsByCourseId(courseId);
+        return new ResponseEntity<>(tests, HttpStatus.OK);
+    }
+    @GetMapping("/rep/byCourse/{courseId}")
+    public ResponseEntity<List<Test>> getTestsByCourseId(@PathVariable Long courseId) {
+        List<Test> tests = testService.getTestsrepByCourseId(courseId);
+        return ResponseEntity.ok(tests);
+    }
+
 }

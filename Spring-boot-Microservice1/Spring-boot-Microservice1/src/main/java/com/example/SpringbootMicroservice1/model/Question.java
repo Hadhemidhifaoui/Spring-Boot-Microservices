@@ -20,7 +20,8 @@ public class Question {
    // @JdbcTypeCode(SqlTypes.JSON)
     @ManyToOne()
     @JoinColumn(name = "test_id", nullable = true)
-    @JsonBackReference
+    //@JsonBackReference
+    @JsonIgnore
     private Test test;
 
 
@@ -31,16 +32,15 @@ public class Question {
     private String type;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
-    @Column(name = "answers", nullable = true)
-    @JsonIgnore
     private List<Answer> answers;
+
+
 
     /*@OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
 
     private List<Suggestion> suggestions;*/
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     @Column(name = "suggestions", nullable = true)
-    @JsonIgnore
     private List<Suggestion> suggestions = new ArrayList<>();
 
 

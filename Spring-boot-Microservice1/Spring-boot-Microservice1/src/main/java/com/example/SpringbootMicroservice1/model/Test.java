@@ -1,16 +1,27 @@
 package com.example.SpringbootMicroservice1.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-@Data
+@Setter
+
+@Getter
+
+@AllArgsConstructor
+
+@NoArgsConstructor
+
+@ToString
 @Entity
 @Table(name = "test")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Test {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +29,7 @@ public class Test {
 
     @ManyToOne
     @JoinColumn(name = "course_id", unique = false)
+    @JsonIgnore
     private Course course;
 
     @Column(name = "name", length = 100, nullable = true)
@@ -28,7 +40,9 @@ public class Test {
 
     @OneToMany(mappedBy = "test", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private List<Question> questions = new ArrayList<>();
+    private List<Question> questions = new LinkedList<>();
+
+
 
     public void addQuestion(Question question) {
         questions.add(question);

@@ -13,9 +13,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+
 
 
 @Service
@@ -76,6 +79,7 @@ public class TestService {
     @Transactional
     public Test addTestWithQuestionsAndAnswers(String testName, String testDescription, Long courseId, List<TestQuestionRequest> questionRequests) {
         // Vérifier si le cours existe
+        System.out.println("Début de la méthode addTestWithQuestionsAndAnswers");
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new EntityNotFoundException("Course with id " + courseId + " not found"));
 
@@ -90,6 +94,7 @@ public class TestService {
         // Ajouter des questions au test
         List<Question> questions = new ArrayList<>();
         for (TestQuestionRequest questionRequest : questionRequests) {
+            System.out.println( questionRequest);
             Question question = questionService.createQuestion(test, questionRequest);
             questions.add(question);
         }
@@ -102,6 +107,42 @@ public class TestService {
         test = testRepository.save(test);
         return test;
     }
+    @Transactional
+    public List<Test> getTestsByCourseId(Long courseId) {
+        List<Test> tests = testRepository.findByCourseId(courseId);
+
+        for (Test test : tests) {
+            List<Question> questions = questionRepository.findByTestId(test.getId());
+
+            for (Question question : questions) {
+                List<Suggestion> suggestions = suggestionRepository.findByQuestionId(question.getId());
+                question.setSuggestions(suggestions);
+            }
+
+            test.setQuestions(questions);
+        }
+
+        return tests;
+    }
+
+    @Transactional
+    public List<Test> getTestsrepByCourseId(Long courseId) {
+        List<Test> tests = testRepository.findByCourseId(courseId);
+
+        for (Test test : tests) {
+            List<Question> questions = questionRepository.findByTestId(test.getId());
+
+            for (Question question : questions) {
+                List<Answer> answers = reponseRepository.findByQuestionId(question.getId());
+                question.setAnswers(answers);
+            }
+
+            test.setQuestions(questions);
+        }
+
+        return tests;
+    }
+
 
 
 }

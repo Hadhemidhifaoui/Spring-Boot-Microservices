@@ -15,7 +15,7 @@ public class Suggestion {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "question_id", nullable = true)
+    @JoinColumn(name = "question_id", nullable = false)
     @JsonIgnore
     private Question question;
 

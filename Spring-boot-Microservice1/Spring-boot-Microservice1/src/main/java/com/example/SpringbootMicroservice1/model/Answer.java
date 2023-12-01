@@ -1,5 +1,6 @@
 package com.example.SpringbootMicroservice1.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -12,7 +13,8 @@ public class Answer {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "question_id", nullable = true)
+    @JoinColumn(name = "question_id", nullable = false)
+    @JsonIgnore
     private Question question;
 
     @Column(name = "text", length = 255, nullable = true)

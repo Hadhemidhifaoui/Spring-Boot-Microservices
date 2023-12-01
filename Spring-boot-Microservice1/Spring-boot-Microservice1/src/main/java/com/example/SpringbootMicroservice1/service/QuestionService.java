@@ -63,23 +63,28 @@ public class QuestionService {
         question.setText(questionRequest.getQuestionContent());
         question.setTest(test);
 
-        // Sauvegarder la question
-        question = questionRepository.save(question);
-
         // Ajouter des suggestions à la question
         List<Suggestion> suggestions = new ArrayList<>();
         for (String suggestionContent : questionRequest.getSuggestionContents()) {
             Suggestion suggestion = new Suggestion();
             suggestion.setText(suggestionContent);
+
+            // Associer la suggestion à la question avant de sauvegarder
             suggestion.setQuestion(question);
-            suggestions.add(suggestionService.addSuggestion(suggestion));
+
+            // Ajouter la suggestion à la liste
+            suggestions.add(suggestion);
         }
 
-        // Associer les suggestions à la question
+        // Associer les suggestions à la question après avoir créé toutes les suggestions
         question.setSuggestions(suggestions);
+
+        // Sauvegarder la question avec les suggestions
+        question = questionRepository.save(question);
 
         // Retourner la question sauvegardée
         return question;
     }
+
 }
 
