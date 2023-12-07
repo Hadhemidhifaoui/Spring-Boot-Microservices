@@ -1,6 +1,7 @@
 package com.example.springbootmicroservice3.repository;
 
 import com.example.springbootmicroservice3.model.ChatMessage;
+import com.example.springbootmicroservice3.model.Message;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ChatMessageRepository extends JpaRepository<ChatMessage, String> {
+public interface ChatMessageRepository extends JpaRepository<Message, Long> {
 
     // Autres méthodes définies par JpaRepository...
 

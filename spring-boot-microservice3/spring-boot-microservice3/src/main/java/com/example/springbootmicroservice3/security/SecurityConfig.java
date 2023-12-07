@@ -43,7 +43,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors()
-                        .and()
+                .and()
                 .csrf().disable()
 
                 .authorizeHttpRequests()
@@ -53,7 +53,7 @@ public class SecurityConfig {
                 .permitAll() // login and register pre-path
                 .requestMatchers("/ws/**")
                 .permitAll()
-                .requestMatchers(HttpMethod.GET, "/gateway/course").permitAll()
+     //           .requestMatchers(HttpMethod.GET, "/gateway/course").permitAll()
                 //.requestMatchers("/gateway/course/**").hasRole(Role.ADMIN.name())
                 .anyRequest()
                 .authenticated()
@@ -80,11 +80,6 @@ public class SecurityConfig {
                     .maxAge(3600);
         }
     }
-
-
-
-
-
 
 
 }

@@ -39,7 +39,7 @@ public class Question {
     /*@OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
 
     private List<Suggestion> suggestions;*/
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
     @Column(name = "suggestions", nullable = true)
     private List<Suggestion> suggestions = new ArrayList<>();
 

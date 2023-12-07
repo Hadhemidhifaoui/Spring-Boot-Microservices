@@ -1,26 +1,23 @@
 package com.example.springbootmicroservice3.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-@Data
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 public class ChatMessage {
 
+
     @Id
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
     private MessageType type;
     private String content;
     private String sender;
     private String rec;
 
-    private LocalDateTime dateMessage;
+    private Number dateMessege;
 
 
 
@@ -32,12 +29,11 @@ public class ChatMessage {
         this.type = type;
     }
 
-    public LocalDateTime getDateMessage() {
-        return dateMessage;
+    public Number getDateMessege() {
+        return dateMessege;
     }
-
-    public void setDateMessage(LocalDateTime dateMessage) {
-        this.dateMessage = dateMessage;
+    public void setDateMessege(Number dateMessege) {
+        this.dateMessege = dateMessege;
     }
     public String getContent() {
         return content;
@@ -58,5 +54,12 @@ public class ChatMessage {
     public void setRec(String rec) {
         this.rec = rec;
     }
-}
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+}

@@ -51,17 +51,24 @@ public class AnswerService {
     public void deleteAnswer(Long answerId) {
         answerRepository.deleteById(answerId);
     }
+
+
     @Transactional
-    public void addAnswers(Long courseId, Long testId, Long questionId, List<Answer> answers) {
+    public void addAnswers(Long userId, Long courseId, Long testId, Long questionId, List<Answer> answers) {
         // Assurez-vous que la question existe
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new EntityNotFoundException("Question not found with id: " + questionId));
 
-        // Associez chaque réponse à la question
+        // Associez chaque réponse à la question et à l'utilisateur
         answers.forEach(answer -> {
             answer.setQuestion(question);
-            answerRepository.save(answer);
+            answer.setUserId(userId);
         });
+
+        // Enregistrez toutes les réponses en une seule opération
+        answerRepository.saveAll(answers);
     }
+
+
 }
 

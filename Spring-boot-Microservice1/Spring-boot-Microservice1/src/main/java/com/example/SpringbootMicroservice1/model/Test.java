@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -38,8 +39,9 @@ public class Test {
     @Column(name = "description", length = 255, nullable = true)
     private String description;
 
-    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "test", fetch = FetchType.LAZY)
     @JsonManagedReference
+    @BatchSize(size = 10)
     private List<Question> questions = new LinkedList<>();
 
 

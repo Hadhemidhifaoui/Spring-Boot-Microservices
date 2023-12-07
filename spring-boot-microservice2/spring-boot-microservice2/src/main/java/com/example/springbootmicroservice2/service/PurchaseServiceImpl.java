@@ -22,6 +22,10 @@ public class PurchaseServiceImpl implements PurchaseService
         return purchaseRepository.save(purchase);
     }
 
+    public List<Purchase> findAllPurchases() {
+        return purchaseRepository.findAll();
+    }
+
     @Override
     public List<Purchase> findAllPurchasesOfUser(Long userId)
     {

@@ -20,6 +20,9 @@ public class Answer {
     @Column(name = "text", length = 255, nullable = true)
     private String text;
 
+    @Column(name = "user_id")
+    private Long userId;
+
 
 }
 

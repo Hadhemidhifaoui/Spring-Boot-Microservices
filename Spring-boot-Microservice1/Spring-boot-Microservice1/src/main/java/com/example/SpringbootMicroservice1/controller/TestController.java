@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/tests")
@@ -41,8 +42,16 @@ public class TestController {
     }
 
     @GetMapping
-    public List<Test> getAllTests() {
-        return testService.getAllTests();
+    public ResponseEntity<List<Test>> getAllTests() {
+        List<Test> tests = testService.getAllTestsWithDetails();
+        return new ResponseEntity<>(tests, HttpStatus.OK);
+
+    }
+
+    @GetMapping("/details/{testId}")
+    public ResponseEntity<Test> getTestDetails(@PathVariable Long testId) {
+        Test test = testService.getTestDetails(testId);
+        return ResponseEntity.ok(test);
     }
 
 
@@ -52,10 +61,11 @@ public class TestController {
         return new ResponseEntity<>(savedTest, HttpStatus.CREATED);
     }
 
+
     @DeleteMapping("/{testId}")
-    public ResponseEntity<?> deleteTest(@PathVariable Long testId) {
+    public ResponseEntity<String> deleteTest(@PathVariable Long testId) {
         testService.deleteTest(testId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok("Test deleted successfully");
     }
 
 
@@ -79,8 +89,11 @@ public class TestController {
         return new ResponseEntity<>(tests, HttpStatus.OK);
     }
     @GetMapping("/rep/byCourse/{courseId}")
-    public ResponseEntity<List<Test>> getTestsByCourseId(@PathVariable Long courseId) {
-        List<Test> tests = testService.getTestsrepByCourseId(courseId);
+    public ResponseEntity<List<Test>> getTestsByCourseId(
+            @PathVariable Long courseId,
+            @RequestParam Long userId) {  // Ajoutez le paramètre userId
+
+        List<Test> tests = testService.getTestsrepByCourseId(courseId, userId);
         return ResponseEntity.ok(tests);
     }
 

@@ -19,6 +19,9 @@ public interface PurchaseServiceRequest
     @PostMapping//api/purchase
     Object savePurchase(@RequestBody Object requestBody);
 
+    @GetMapping("/all")
+    List<Object> getAllPurchases();
+
     @GetMapping("{userId}")//api/purchase/{userId}
     List<Object> getAllPurchasesOfUser(@PathVariable("userId") Long userId);
 }

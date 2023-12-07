@@ -9,4 +9,5 @@ public interface PurchaseService
     Purchase savePurchase(Purchase purchase);
 
     List<Purchase> findAllPurchasesOfUser(Long userId);
+    List<Purchase> findAllPurchases();
 }

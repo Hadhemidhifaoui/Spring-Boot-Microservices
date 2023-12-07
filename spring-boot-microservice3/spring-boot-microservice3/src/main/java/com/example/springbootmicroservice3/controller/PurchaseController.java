@@ -28,4 +28,9 @@ public class PurchaseController
     {
         return ResponseEntity.ok(purchaseServiceRequest.getAllPurchasesOfUser(userPrincipal.getId()));
     }
+    @GetMapping("all")//gateway/purchase/all
+    public ResponseEntity<?> getAllPurchases()
+    {
+        return ResponseEntity.ok(purchaseServiceRequest.getAllPurchases());
+    }
 }

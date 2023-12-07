@@ -25,4 +25,9 @@ public class PurchaseController
     {
         return ResponseEntity.ok(purchaseService.findAllPurchasesOfUser(userId));
     }
+    @GetMapping("/all") // Endpoint: api/purchase/all
+    public ResponseEntity<?> getAllPurchases() {
+        return ResponseEntity.ok(purchaseService.findAllPurchases());
+    }
+
 }

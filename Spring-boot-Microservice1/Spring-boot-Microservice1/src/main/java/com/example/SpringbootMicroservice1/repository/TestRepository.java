@@ -17,8 +17,11 @@ public interface TestRepository extends JpaRepository<Test, Long> {
     boolean existsByNameAndCourse_Id(String name, Long course_id);
 
 
-    @EntityGraph(attributePaths = {"questions", "questions.suggestions"})
+
     List<Test> findAll();
+
+    @Query("SELECT DISTINCT t FROM Test t JOIN FETCH t.questions q JOIN FETCH q.suggestions JOIN FETCH t.course")
+    List<Test> findAllWithQuestionsAndSuggestionsAndCourse();
 
 }
 

@@ -37,6 +37,8 @@ public interface CourseServiceRequest
 
     @GetMapping("/tests")
     List<Object> getAllTests();
+    @GetMapping("/tests/details/{testId}")
+    Object getTestDetails(@PathVariable Long testId);
 
     @PostMapping("/tests")
     Object saveTest(@RequestBody Object test);

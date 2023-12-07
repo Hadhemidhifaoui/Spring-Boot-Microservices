@@ -1,5 +1,6 @@
 package com.example.springbootmicroservice3.controller;
 
+import com.example.springbootmicroservice3.model.TestRequest;
 import com.example.springbootmicroservice3.request.CourseServiceRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,11 @@ public class TestController {
         return ResponseEntity.ok(testServiceRequest.getAllTests());
     }
 
+    @GetMapping("/details/{testId}")
+    public ResponseEntity<?> getTestDetails(@PathVariable Long testId) {
+        Object test = testServiceRequest.getTestDetails(testId);
+        return ResponseEntity.ok(test);}
+
     @GetMapping("{testId}") // Ajoutez un chemin approprié
     public ResponseEntity<?> getTestById(@PathVariable Long testId) {
         Object test = testServiceRequest.getTestById(testId);
@@ -51,10 +57,11 @@ public class TestController {
         }
     }
 
-    @PostMapping("addTest") // Ajoutez un chemin approprié
-    public ResponseEntity<?> addTestWithQuestionsAndAnswers(@RequestBody Object request) {
+    @PostMapping("addTest")
+    public ResponseEntity<?> addTestWithQuestionsAndAnswers(@RequestBody TestRequest request) {
         return ResponseEntity.ok(testServiceRequest.addTestWithQuestionsAndAnswers(request));
     }
+
 
     @GetMapping("byCourse/{courseId}") // Ajoutez un chemin approprié
     public ResponseEntity<?> getTestsByCourse(@PathVariable Long courseId) {

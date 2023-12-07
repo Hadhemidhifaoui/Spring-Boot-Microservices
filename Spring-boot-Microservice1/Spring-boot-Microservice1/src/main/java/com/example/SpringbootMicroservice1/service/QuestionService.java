@@ -62,22 +62,32 @@ public class QuestionService {
         Question question = new Question();
         question.setText(questionRequest.getQuestionContent());
         question.setTest(test);
+        question.setType(questionRequest.getQuestionType());
 
-        // Ajouter des suggestions à la question
-        List<Suggestion> suggestions = new ArrayList<>();
-        for (String suggestionContent : questionRequest.getSuggestionContents()) {
-            Suggestion suggestion = new Suggestion();
-            suggestion.setText(suggestionContent);
 
-            // Associer la suggestion à la question avant de sauvegarder
-            suggestion.setQuestion(question);
 
-            // Ajouter la suggestion à la liste
-            suggestions.add(suggestion);
+        // Ajouter des suggestions à la question si elles sont présentes
+        List<String> suggestionContents = questionRequest.getSuggestionContents();
+        if (suggestionContents != null) {
+            List<Suggestion> suggestions = new ArrayList<>();
+            for (String suggestionContent : suggestionContents) {
+                Suggestion suggestion = new Suggestion();
+                suggestion.setText(suggestionContent);
+
+                // Associer la suggestion à la question avant de sauvegarder
+                suggestion.setQuestion(question);
+
+                // Ajouter la suggestion à la liste
+                suggestions.add(suggestion);
+            }
+
+            // Associer les suggestions à la question après avoir créé toutes les suggestions
+            question.setSuggestions(suggestions);
         }
 
-        // Associer les suggestions à la question après avoir créé toutes les suggestions
-        question.setSuggestions(suggestions);
+// Sauvegarder la question avec les suggestions
+        question = questionRepository.save(question);
+
 
         // Sauvegarder la question avec les suggestions
         question = questionRepository.save(question);

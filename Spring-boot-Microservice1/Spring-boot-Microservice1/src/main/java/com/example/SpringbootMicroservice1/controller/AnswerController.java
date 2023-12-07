@@ -58,13 +58,14 @@ public class AnswerController {
     }
     @PostMapping("/add")
     public ResponseEntity<String> addAnswer(
+            @RequestParam Long userId,
             @RequestParam Long courseId,
             @RequestParam Long testId,
             @RequestParam Long questionId,
             @RequestBody List<Answer> answers) {
 
         try {
-            answerService.addAnswers(courseId, testId, questionId, answers);
+            answerService.addAnswers(userId, courseId, testId, questionId, answers);
             return ResponseEntity.ok("Answers added successfully.");
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course, Test, or Question not found.");

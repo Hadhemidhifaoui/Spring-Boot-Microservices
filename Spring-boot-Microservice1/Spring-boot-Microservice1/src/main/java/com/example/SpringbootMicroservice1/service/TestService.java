@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 
@@ -63,18 +65,59 @@ public class TestService {
         Optional<Test> test = testRepository.findById(testId);
         return test.orElse(null);
     }
+    @Transactional
+    public List<Test> getAllTestsWithDetails() {
+        List<Test> tests = testRepository.findAll();
 
-    public List<Test> getAllTests() {
-        return testRepository.findAll();
+        for (Test test : tests) {
+            // Récupérer le cours associé à chaque test avec ses données
+            Course course = courseRepository.findById(test.getCourse().getId()).orElse(null);
+
+            if (course != null) {
+                test.setCourse(course);
+
+                List<Question> questions = questionRepository.findByTestId(test.getId());
+
+                for (Question question : questions) {
+                    List<Suggestion> suggestions = suggestionRepository.findByQuestionId(question.getId());
+                    question.setSuggestions(suggestions);
+                }
+
+                test.setQuestions(questions);
+            }
+        }
+
+        return tests;
     }
+
+
+
+
+
 
     public Test saveTest(Test test) {
         return testRepository.save(test);
     }
 
+    @Transactional
     public void deleteTest(Long testId) {
-        testRepository.deleteById(testId);
+        Test test = testRepository.findById(testId).orElseThrow(() -> new EntityNotFoundException("Test not found with id: " + testId));
+
+        // Supprimer manuellement les questions et les suggestions associées
+        List<Question> questions = test.getQuestions();
+        for (Question question : questions) {
+            // Supprimer les suggestions associées à chaque question
+            List<Suggestion> suggestions = question.getSuggestions();
+            suggestionRepository.deleteAll(suggestions);
+
+            // Supprimer la question après suppression des suggestions
+            questionRepository.delete(question);
+        }
+
+        // Supprimer le test après suppression des questions et suggestions
+        testRepository.delete(test);
     }
+
 
     @Transactional
     public Test addTestWithQuestionsAndAnswers(String testName, String testDescription, Long courseId, List<TestQuestionRequest> questionRequests) {
@@ -126,14 +169,14 @@ public class TestService {
     }
 
     @Transactional
-    public List<Test> getTestsrepByCourseId(Long courseId) {
+    public List<Test> getTestsrepByCourseId(Long courseId, Long userId) {
         List<Test> tests = testRepository.findByCourseId(courseId);
 
         for (Test test : tests) {
             List<Question> questions = questionRepository.findByTestId(test.getId());
 
             for (Question question : questions) {
-                List<Answer> answers = reponseRepository.findByQuestionId(question.getId());
+                List<Answer> answers = reponseRepository.findByQuestionIdAndUserId(question.getId(), userId);
                 question.setAnswers(answers);
             }
 
@@ -144,5 +187,22 @@ public class TestService {
     }
 
 
+    @Transactional
+    public Test getTestDetails(Long testId) {
+        Test test = testRepository.findById(testId).orElse(null);
+
+        if (test != null) {
+            List<Question> questions = questionRepository.findByTestId(testId);
+
+            for (Question question : questions) {
+                List<Suggestion> suggestions = suggestionRepository.findByQuestionId(question.getId());
+                question.setSuggestions(suggestions);
+            }
+
+            test.setQuestions(questions);
+        }
+
+        return test;
+    }
 
 }
