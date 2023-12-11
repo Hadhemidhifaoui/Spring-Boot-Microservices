@@ -1,8 +1,10 @@
 package com.example.SpringbootMicroservice1.dto;
 
 import java.util.List;
-import lombok.Data;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import lombok.Data;
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @Data
 public class TestRequest {
     private String testName;

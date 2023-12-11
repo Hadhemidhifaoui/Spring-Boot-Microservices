@@ -1,7 +1,11 @@
 package com.example.springbootmicroservice3.request;
 
+import com.example.springbootmicroservice3.model.TestRequest;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -12,9 +16,19 @@ import java.util.List;
 )
 public interface CourseServiceRequest
 {
-    @PostMapping("/api/course/save")
-///api/course/save
-    Object saveCourse(@RequestBody Object requestBody);
+    /*@PostMapping("/api/course/save")
+
+    Object saveCourse(@RequestBody Object requestBody);*/
+
+    @PostMapping(value = "/api/course" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+
+    ResponseEntity<?> saveCourse(
+            @RequestPart("title") String title,
+            @RequestPart("duree") String duree,
+            @RequestPart("lien") String lien,
+            @RequestPart("price") double price,
+            @RequestPart("image") MultipartFile image);
+
 
     @DeleteMapping("/api/course/{courseId}")//api/course/{courseId}
     void deleteCourse(@PathVariable("courseId") Long courseId);
@@ -26,8 +40,18 @@ public interface CourseServiceRequest
     @GetMapping("/api/course/{courseId}")
     Object getCourseById(@PathVariable("courseId") Long courseId);
 
-    @PutMapping("/api/course/{courseId}")
-    Object updateCourse(@PathVariable("courseId") Long courseId, @RequestBody Object updatedCourse);
+
+
+
+    @PutMapping(value = "/api/course/{courseId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ResponseEntity<?> updateCourse(
+            @RequestPart(name = "image", required = false) MultipartFile image,
+            @PathVariable Long courseId,
+            @RequestPart("title") String title,
+            @RequestPart("duree") String duree,
+            @RequestPart("lien") String lien,
+            @RequestPart("price") double price);
+
 
     @PutMapping("/tests/{testId}")
     Object updateTest(@PathVariable Long testId, @RequestBody Object updatedTest);
@@ -47,7 +71,8 @@ public interface CourseServiceRequest
     void deleteTest(@PathVariable Long testId);
 
     @PostMapping("/tests/addTest")
-    Object addTestWithQuestionsAndAnswers(@RequestBody Object request);
+    Object addTestWithQuestionsAndAnswers(@RequestBody TestRequest request);
+
 
     @GetMapping("/tests/byCourse/{courseId}")
     List<Object> getTestsByCourse(@PathVariable Long courseId);

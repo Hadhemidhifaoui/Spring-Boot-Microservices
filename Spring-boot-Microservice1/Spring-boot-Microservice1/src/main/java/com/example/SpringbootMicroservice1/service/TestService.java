@@ -2,6 +2,7 @@ package com.example.SpringbootMicroservice1.service;
 
 
 import com.example.SpringbootMicroservice1.dto.TestQuestionRequest;
+import com.example.SpringbootMicroservice1.dto.TestRequest;
 import com.example.SpringbootMicroservice1.model.*;
 import com.example.SpringbootMicroservice1.repository.*;
 import jakarta.persistence.EntityManager;
@@ -42,6 +43,9 @@ public class TestService {
     @Autowired
     private QuestionService questionService;
 
+    @Autowired
+    private CourseServiceImpl courseService;
+
     @PersistenceUnit
     private EntityManagerFactory entityManagerFactory;
 
@@ -65,33 +69,44 @@ public class TestService {
         Optional<Test> test = testRepository.findById(testId);
         return test.orElse(null);
     }
-    @Transactional
+    /*@Transactional
     public List<Test> getAllTestsWithDetails() {
         List<Test> tests = testRepository.findAll();
 
         for (Test test : tests) {
-            // Récupérer le cours associé à chaque test avec ses données
-            Course course = courseRepository.findById(test.getCourse().getId()).orElse(null);
+            System.out.println("Test ID: " + test.getId());
+            System.out.println("Test Course ID: " + test.getCourse().getId());
+            if (test.getCourse() != null) {
+                // Récupérer le cours associé à chaque test avec ses données
+                Course course = courseRepository.findById(test.getCourse().getId()).orElse(null);
 
-            if (course != null) {
-                test.setCourse(course);
+                if (course != null) {
+                    test.setCourse(course);
 
-                List<Question> questions = questionRepository.findByTestId(test.getId());
+                    List<Question> questions = questionRepository.findByTestId(test.getId());
 
-                for (Question question : questions) {
-                    List<Suggestion> suggestions = suggestionRepository.findByQuestionId(question.getId());
-                    question.setSuggestions(suggestions);
+                    for (Question question : questions) {
+                        List<Suggestion> suggestions = suggestionRepository.findByQuestionId(question.getId());
+                        question.setSuggestions(suggestions);
+                    }
+
+                    test.setQuestions(questions);
                 }
-
-                test.setQuestions(questions);
             }
         }
 
         return tests;
+    }*/
+
+
+
+
+
+
+    @Transactional
+    public List<Test> getAllTestsWithDetails() {
+        return testRepository.findAllWithDetails();
     }
-
-
-
 
 
 
@@ -120,24 +135,22 @@ public class TestService {
 
 
     @Transactional
-    public Test addTestWithQuestionsAndAnswers(String testName, String testDescription, Long courseId, List<TestQuestionRequest> questionRequests) {
+    public Test addTestWithQuestionsAndAnswers(TestRequest testRequest) {
         // Vérifier si le cours existe
         System.out.println("Début de la méthode addTestWithQuestionsAndAnswers");
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new EntityNotFoundException("Course with id " + courseId + " not found"));
+        Course course = courseRepository.findById(testRequest.getCourse_id())
+                .orElseThrow(() -> new EntityNotFoundException("Course with id " + testRequest.getCourse_id() + " not found"));
 
         // Créer un nouveau test
         Test test = new Test();
-        test.setName(testName);
-        test.setDescription(testDescription);
+        test.setName(testRequest.getTestName());
+        test.setDescription(testRequest.getTestDescription());
         test.setCourse(course);
-
-
 
         // Ajouter des questions au test
         List<Question> questions = new ArrayList<>();
-        for (TestQuestionRequest questionRequest : questionRequests) {
-            System.out.println( questionRequest);
+        for (TestQuestionRequest questionRequest : testRequest.getQuestions()) {
+            System.out.println(questionRequest);
             Question question = questionService.createQuestion(test, questionRequest);
             questions.add(question);
         }
@@ -145,11 +158,11 @@ public class TestService {
         // Associer les questions au test
         test.setQuestions(questions);
 
-
         // Sauvegarder le test
         test = testRepository.save(test);
         return test;
     }
+
     @Transactional
     public List<Test> getTestsByCourseId(Long courseId) {
         List<Test> tests = testRepository.findByCourseId(courseId);
@@ -192,17 +205,38 @@ public class TestService {
         Test test = testRepository.findById(testId).orElse(null);
 
         if (test != null) {
-            List<Question> questions = questionRepository.findByTestId(testId);
+            // Récupérer les détails du cours
+            Course course = test.getCourse();
+            if (course != null) {
+                // Chargez les détails du cours (ajoutez ces méthodes à votre service de cours)
+                course = courseService.getCourseDetails(course.getId());
+                test.setCourse(course);
+            }
 
+            System.out.println("Course details: " + course);
+
+            // Charger les questions et les suggestions pour chaque question
+            List<Question> questions = questionRepository.findByTestId(testId);
             for (Question question : questions) {
                 List<Suggestion> suggestions = suggestionRepository.findByQuestionId(question.getId());
                 question.setSuggestions(suggestions);
             }
 
+            // Ajouter les questions au test
             test.setQuestions(questions);
         }
 
         return test;
     }
+
+
+
+
+
+
+
+
+
+
 
 }

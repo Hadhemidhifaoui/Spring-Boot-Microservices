@@ -69,4 +69,13 @@ public class Test {
         this.course = course;
         course.getTests().add(this);
     }
+    @Override
+    public String toString() {
+        return "Test{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", courseId=" + (course != null ? course.getId() : "null") + // Évitez la boucle infinie ici
+                '}';
+    }
 }

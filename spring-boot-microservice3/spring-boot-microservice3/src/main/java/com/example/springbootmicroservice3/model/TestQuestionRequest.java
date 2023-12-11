@@ -1,4 +1,4 @@
-package com.example.SpringbootMicroservice1.dto;
+package com.example.springbootmicroservice3.model;
 
 import java.util.List;
 

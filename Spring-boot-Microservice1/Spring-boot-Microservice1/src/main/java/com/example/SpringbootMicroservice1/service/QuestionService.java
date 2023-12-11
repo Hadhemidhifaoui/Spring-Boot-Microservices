@@ -2,11 +2,13 @@ package com.example.SpringbootMicroservice1.service;
 
 
 
+import com.example.SpringbootMicroservice1.dto.SuggestionContent;
 import com.example.SpringbootMicroservice1.dto.TestQuestionRequest;
 import com.example.SpringbootMicroservice1.model.Question;
 import com.example.SpringbootMicroservice1.model.Suggestion;
 import com.example.SpringbootMicroservice1.model.Test;
 import com.example.SpringbootMicroservice1.repository.QuestionRepository;
+import com.example.SpringbootMicroservice1.repository.SuggestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,9 @@ public class QuestionService {
 
     @Autowired
     private SuggestionService suggestionService;
+
+    @Autowired
+    private SuggestionRepository suggestionRepository;
 
     public Question updateQuestion(Long questionId, Question updatedQuestion) {
         Optional<Question> existingQuestion = questionRepository.findById(questionId);
@@ -64,18 +69,23 @@ public class QuestionService {
         question.setTest(test);
         question.setType(questionRequest.getQuestionType());
 
-
+        // Save the question to make it a managed entity
+        question = questionRepository.save(question);
 
         // Ajouter des suggestions à la question si elles sont présentes
-        List<String> suggestionContents = questionRequest.getSuggestionContents();
+        List<SuggestionContent> suggestionContents = questionRequest.getSuggestionContents();
         if (suggestionContents != null) {
             List<Suggestion> suggestions = new ArrayList<>();
-            for (String suggestionContent : suggestionContents) {
-                Suggestion suggestion = new Suggestion();
-                suggestion.setText(suggestionContent);
 
-                // Associer la suggestion à la question avant de sauvegarder
+            for (SuggestionContent suggestionContent : suggestionContents) {
+                Suggestion suggestion = new Suggestion();
+                suggestion.setText(suggestionContent.getSuggestionContent());
+
+                // Associer la suggestion à la question après avoir sauvegardé la question
                 suggestion.setQuestion(question);
+
+                // Save the suggestion in the repository
+                suggestionRepository.save(suggestion);
 
                 // Ajouter la suggestion à la liste
                 suggestions.add(suggestion);
@@ -83,17 +93,16 @@ public class QuestionService {
 
             // Associer les suggestions à la question après avoir créé toutes les suggestions
             question.setSuggestions(suggestions);
+
+            // Save the question again (optional, depending on your cascade settings)
+            // It may not be necessary to save the question again if CascadeType.ALL is set on the suggestions relationship
+            // question = questionRepository.save(question);
+
+            // Retourner la question sauvegardée
+            return question;
         }
 
-// Sauvegarder la question avec les suggestions
-        question = questionRepository.save(question);
-
-
-        // Sauvegarder la question avec les suggestions
-        question = questionRepository.save(question);
-
-        // Retourner la question sauvegardée
-        return question;
+        return question; // If there are no suggestions, return the question without suggestions
     }
 
 }

@@ -3,14 +3,18 @@ package com.example.springbootmicroservice3.service;
 import com.example.springbootmicroservice3.model.Role;
 import com.example.springbootmicroservice3.model.User;
 import com.example.springbootmicroservice3.repository.UserRepository;
+import com.example.springbootmicroservice3.utils.StorageService;
 import jakarta.ws.rs.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -22,6 +26,10 @@ public class UserServiceImpl implements UserService
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
+
+    @Autowired
+    private StorageService storageService;
     /*@Override
     public User saveUser(User user)
     {
@@ -57,26 +65,32 @@ public class UserServiceImpl implements UserService
     {
         userRepository.updateUserRole(username, newRole);
     }
+    @Transactional
+    public User updateUser(Long userId, MultipartFile image, User userUpdateRequest) {
+        User existingUser = userRepository.findById(userId).orElse(null);
 
-    @Override
-    public User updateUser(Long id, User updatedUser) {
-        User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("User not found with id: " + id));
+        if (existingUser != null && existingUser.getId().equals(userId) && userUpdateRequest != null) {
+            existingUser.setName(userUpdateRequest.getName());
+            existingUser.setUsername(userUpdateRequest.getUsername());
+            existingUser.setPhone(userUpdateRequest.getPhone());
+            existingUser.setAdresse(userUpdateRequest.getAdresse());
+            existingUser.setStatut(userUpdateRequest.getStatut());
 
-        // Update fields as needed
-        existingUser.setName(updatedUser.getName());
-        existingUser.setUsername(updatedUser.getUsername());
-        existingUser.setPhone(updatedUser.getPhone());
-        existingUser.setAdresse(updatedUser.getAdresse());
-        //existingUser.setImage(updatedUser.getImage());
+            if (image != null && !image.isEmpty()) {
+                String filename = StringUtils.cleanPath(image.getOriginalFilename());
 
-        // If the password is provided, encode and update it
-        if (updatedUser.getPassword() != null) {
-            existingUser.setPassword(updatedUser.getPassword(), passwordEncoder);
+                existingUser.setImage(filename);
+                storageService.store(image);
+            }
+
+            User updatedUser = userRepository.save(existingUser);
+            return updatedUser;
         }
 
-        // Save the updated user
-        return userRepository.save(existingUser);
+        return null;
     }
-
+    @Override
+    public void deleteUser(Long userId) {
+        userRepository.deleteById(userId);
+    }
 }
