@@ -49,6 +49,9 @@ public class User implements UserDetails
     private Statut statut;
 
 
+    @Column(name = "feedback", length = 1000, nullable = true)
+    private String feedback;
+
     private String token;
 
     @Override
@@ -89,4 +92,9 @@ public class User implements UserDetails
     public boolean isEnabled() {
         return true;
     }
+
+    public void addFeedback(String userFeedback) {
+        this.feedback = userFeedback;
+    }
 }
+

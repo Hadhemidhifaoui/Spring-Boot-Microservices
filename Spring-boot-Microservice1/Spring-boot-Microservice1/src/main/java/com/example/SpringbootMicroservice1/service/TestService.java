@@ -142,7 +142,26 @@ public class TestService {
 
         return tests;
     }
+    public void calculateTotalNote(Test test) {
+        int totalNote = 0;
 
+        List<Question> questions = test.getQuestions();
+        if (questions != null) {
+            for (Question question : questions) {
+                List<Answer> answers = question.getAnswers();
+                if (answers != null) {
+                    for (Answer answer : answers) {
+                        totalNote += answer.getNote();
+                    }
+                }
+            }
+        }
 
-
+        test.setNoteTotal(totalNote);
+        // Save the test if needed
+        //testRepository.save(test);
+    }
 }
+
+
+

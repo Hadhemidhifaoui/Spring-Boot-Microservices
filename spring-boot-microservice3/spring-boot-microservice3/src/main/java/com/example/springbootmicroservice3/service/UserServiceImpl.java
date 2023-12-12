@@ -9,7 +9,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,5 +77,18 @@ public class UserServiceImpl implements UserService
         // Save the updated user
         return userRepository.save(existingUser);
     }
+
+    @Override
+    public void addFeedback(Long userId, String userFeedback) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
+
+        // Add feedback to the user
+        user.addFeedback(userFeedback);
+
+        // Save the updated user to the database
+        userRepository.save(user);
+    }
+
 
 }

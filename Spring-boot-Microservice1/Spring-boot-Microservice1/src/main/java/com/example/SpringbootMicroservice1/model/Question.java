@@ -31,7 +31,7 @@ public class Question {
     @Column(name = "type", length = 20, nullable = true)
     private String type;
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL,  fetch = FetchType.LAZY)
     private List<Answer> answers;
 
 
@@ -39,7 +39,7 @@ public class Question {
     /*@OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
 
     private List<Suggestion> suggestions;*/
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL,  fetch = FetchType.LAZY)
     @Column(name = "suggestions", nullable = true)
     private List<Suggestion> suggestions = new ArrayList<>();
 

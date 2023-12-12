@@ -3,6 +3,8 @@ package com.example.SpringbootMicroservice1.controller;
 import com.example.SpringbootMicroservice1.dto.TestQuestionRequest;
 import com.example.SpringbootMicroservice1.dto.TestRequest;
 import com.example.SpringbootMicroservice1.model.Test;
+import com.example.SpringbootMicroservice1.repository.QuestionRepository;
+import com.example.SpringbootMicroservice1.repository.TestRepository;
 import com.example.SpringbootMicroservice1.service.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/tests")
@@ -39,6 +42,7 @@ public class TestController {
             return new ResponseEntity<>("Test not found", HttpStatus.NOT_FOUND);
         }
     }
+
 
     @GetMapping
     public List<Test> getAllTests() {
@@ -82,6 +86,21 @@ public class TestController {
     public ResponseEntity<List<Test>> getTestsByCourseId(@PathVariable Long courseId) {
         List<Test> tests = testService.getTestsrepByCourseId(courseId);
         return ResponseEntity.ok(tests);
+    }
+    @Autowired
+    private TestRepository testRepository;
+    @PostMapping("/calculateTotalNote/{testId}") //tests/calculateTotalNote/{testId}
+    public ResponseEntity<String> calculateTotalNote(@PathVariable Long testId) {
+        Optional<Test> optionalTest = testRepository.findById(testId);
+
+        if (optionalTest.isPresent()) {
+            Test test = optionalTest.get();
+            testService.calculateTotalNote(test);
+            testRepository.save(test); // Save the updated test
+            return ResponseEntity.ok("Total note calculated and updated for Test with ID: " + testId);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Test not found with ID: " + testId);
+        }
     }
 
 }

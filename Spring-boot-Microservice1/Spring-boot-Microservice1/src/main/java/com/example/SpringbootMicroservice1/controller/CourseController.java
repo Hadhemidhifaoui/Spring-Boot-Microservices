@@ -18,7 +18,7 @@ public class CourseController
     @Autowired
     private CourseService courseService;
 
-    @PostMapping("/save") //api/course
+    @PostMapping("/save") //api/course/save
     public ResponseEntity<?> saveCourse(@RequestBody Course course)
     {
         return new ResponseEntity<>(courseService.saveCourse(course), HttpStatus.CREATED);

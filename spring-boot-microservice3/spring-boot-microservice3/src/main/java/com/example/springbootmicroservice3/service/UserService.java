@@ -20,4 +20,7 @@ public interface UserService
 
     List<User> getUsersByRole(Role role);
     User updateUser(Long id, User updatedUser);
+
+
+    void addFeedback(Long userId, String userFeedback);
 }

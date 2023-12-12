@@ -38,11 +38,12 @@ public class Test {
     @Column(name = "description", length = 255, nullable = true)
     private String description;
 
-    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL , fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Question> questions = new LinkedList<>();
 
-
+    @Column(name = "noteTotal", nullable = true)
+    private int noteTotal;
 
     public void addQuestion(Question question) {
         questions.add(question);

@@ -13,13 +13,15 @@ public class Answer {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "question_id", nullable = false)
+    @JoinColumn(name = "question_id", nullable = true)
     @JsonIgnore
     private Question question;
 
     @Column(name = "text", length = 255, nullable = true)
     private String text;
 
+    @Column(name = "note", nullable = true)
+    private int note;
 
 }
 
