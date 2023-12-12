@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Spring-Boot-Microservices.iml" filepath="$PROJECT_DIR$/.idea/Spring-Boot-Microservices.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Spring-Boot-Microservices-main.iml" filepath="$PROJECT_DIR$/.idea/Spring-Boot-Microservices-main.iml" />
     </modules>
   </component>
 </project>

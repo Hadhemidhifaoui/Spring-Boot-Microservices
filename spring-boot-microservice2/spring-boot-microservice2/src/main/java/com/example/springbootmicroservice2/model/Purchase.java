@@ -20,6 +20,14 @@ public class Purchase
     @Column(name = "course_id", nullable = false)
     private Long courseId;
 
-    @Column(name = "purchase_time", nullable = false)
+    @Column(name = "title", nullable = false)
+    private String title;
+
+    @Column(name = "price", nullable = false)
+    private double price;
+
+    @Column(name = "purchase_time", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime purchaseTime;
 }
+
+

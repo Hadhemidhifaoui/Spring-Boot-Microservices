@@ -11,7 +11,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="spring-boot-microservice2" target="19" />
+      <module name="spring-boot-microservice2" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
