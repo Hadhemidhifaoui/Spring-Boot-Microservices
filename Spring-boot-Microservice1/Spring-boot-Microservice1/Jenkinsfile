@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+
+    environment { 
+        dockerhub = credentials('dockerhub')
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                sh "docker build -t image-cours:latest ."
+            }
+        }
+
+        stage('Login to Docker Hub') {
+            steps {
+                sh "echo \${dockerhub_PSW} | docker login -u \${dockerhub_USR} --password-stdin"
+            }
+        }
+
+        stage('Tag') {
+            steps {
+                sh "docker tag image-cours:latest hadhemidhifaoui/image-cours:latest"
+            }
+        }
+
+        stage('Push to Docker Hub') {
+            steps {
+                sh "docker push hadhemidhifaoui/image-cours:latest"
+            }
+        }
+    }
+}
