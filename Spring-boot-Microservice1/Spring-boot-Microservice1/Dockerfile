@@ -1,5 +1,5 @@
 # Utilisez une image OpenJDK 21 comme base
-FROM adoptopenjdk:21-jre-hotspot
+FROM openjdk:21-jdk-alpine
 
 # Créez le répertoire de travail
 WORKDIR /app
