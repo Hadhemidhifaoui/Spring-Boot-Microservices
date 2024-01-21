@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh "docker build -t image-eureka-server:latest ."
+                sh "docker build -t iimage-eureka:latest ."
             }
         }
 
@@ -20,13 +20,13 @@ pipeline {
 
         stage('Tag') {
             steps {
-                sh "docker tag image-eureka-server:latest hadhemidhifaoui/image-eureka-server:latest"
+                sh "docker tag image-eureka:latest hadhemidhifaoui/image-eureka:latest"
             }
         }
 
         stage('Push to Docker Hub') {
             steps {
-                sh "docker push hadhemidhifaoui/image-eureka-server:latest"
+                sh "docker push hadhemidhifaoui/image-eureka:latest"
             }
         }
         stage('Run Docker Compose') {
