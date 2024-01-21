@@ -4,7 +4,10 @@ pipeline {
     environment { 
         dockerhub = credentials('docker-cred')
     }
-     stage('Maven Install') {
+ 
+
+    stages {
+            stage('Maven Install') {
             steps {
                 script {
                     // Run Maven install
@@ -12,8 +15,6 @@ pipeline {
                 }
             }
         }
-
-    stages {
         stage('Build') {
             steps {
                 sh "docker build -t image-cours:latest ."
