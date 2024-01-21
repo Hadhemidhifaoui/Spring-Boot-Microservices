@@ -1,0 +1,70 @@
+version: '3'
+
+services:
+  cours-service:
+    image: image-cours:latest
+    ports:
+      - "8081:3333"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://nom-db-cours:5432/db-course?currentSchema=sc-course&ssl=false
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=1234
+    depends_on:
+      - db-cours
+
+  purchase-service:
+    image: image-purchase:latest
+    ports:
+      - "8082:4444"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:h2:mem:db_purchase
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=1234
+    depends_on:
+      - db-purchase
+
+  api-gateway:
+    image: image-api-gateway:latest
+    ports:
+      - "8083:5555"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://nom-db-gateway:3306/db_gateway?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=1234
+    depends_on:
+      - db-gateway
+      - cours-service
+      - purchase-service
+
+  eureka-server:
+    image: image-eureka:latest
+    ports:
+      - "8761:6666"
+    depends_on:
+      - cours-service
+      - purchase-service
+      - api-gateway
+
+  db-cours:
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=db-course
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=1234
+
+  db-purchase:
+    image: h2database/h2:latest
+    environment:
+      - H2_DATABASE_NAME=db_purchase
+      - H2_USER=root
+      - H2_PASSWORD=1234
+
+    
+
+  nom-db-gateway:
+    image: mysql:latest
+    environment:
+      - MYSQL_DATABASE=db_gateway
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=1234
+  
