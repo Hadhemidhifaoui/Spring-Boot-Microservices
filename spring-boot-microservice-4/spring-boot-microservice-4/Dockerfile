@@ -2,13 +2,14 @@
 FROM adoptopenjdk:21-jre-hotspot
 
 # Copiez le jar construit dans l'image
-COPY build/libs/api-gateway.jar /app/api-gateway.jar
+COPY build/libs/eureka-server.jar /app/eureka-server.jar
 
 # Définissez le répertoire de travail
 WORKDIR /app
 
 # Exposez le port sur lequel l'application s'exécute
-EXPOSE 5555
+EXPOSE 6666
 
 # Commande pour exécuter l'application
-CMD ["java", "-jar", "api-gateway.jar"]
+CMD ["java", "-jar", "eureka-server.jar"]
+
