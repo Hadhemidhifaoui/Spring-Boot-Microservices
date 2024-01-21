@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment { 
-        dockerhub = credentials('dockerhub')
+        dockerhub = credentials('docker-cred')
     }
 
     stages {
@@ -14,7 +14,7 @@ pipeline {
 
         stage('Login to Docker Hub') {
             steps {
-                sh "echo \${dockerhub_PSW} | docker login -u \${dockerhub_USR} --password-stdin"
+                sh "echo passwordh | docker login -u hadhemidhifaoui --password-stdin"
             }
         }
 
