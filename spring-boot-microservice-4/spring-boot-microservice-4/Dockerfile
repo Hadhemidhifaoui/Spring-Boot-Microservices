@@ -1,5 +1,5 @@
 # Utilisez l'image de base avec Java 21
-FROM adoptopenjdk:21-jre-hotspot
+FROM openjdk:21-jdk-alpine
 
 # Copiez le jar construit dans l'image
 COPY build/libs/eureka-server.jar /app/eureka-server.jar
