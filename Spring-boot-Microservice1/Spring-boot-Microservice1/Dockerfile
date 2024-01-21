@@ -5,7 +5,7 @@ FROM adoptopenjdk:21-jre-hotspot
 WORKDIR /app
 
 # Copiez le jar construit dans l'image
-COPY build/libs/cours-service.jar /app/cours-service.jar
+COPY build/libs/course-service.jar /course-service.jar
 
 # Commande pour démarrer l'application Spring Boot
-CMD ["java", "-jar", "/app/cours-service.jar"]
+CMD ["java", "-jar", "/app/course-service.jar"]
