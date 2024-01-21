@@ -6,6 +6,14 @@ pipeline {
     }
 
     stages {
+          stage('Maven Install') {
+            steps {
+                script {
+                    // Run Maven install
+                    sh 'mvn clean install'
+                }
+            }
+        }
         stage('Build') {
             steps {
                 sh "docker build -t image-eureka:latest ."
