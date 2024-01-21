@@ -2,19 +2,19 @@ pipeline {
     agent any
 
     environment { 
-        dockerhub = credentials('dockerhub')
+        dockerhub = credentials('docker-cred')
     }
 
     stages {
         stage('Build') {
             steps {
-                sh "docker build -t iimage-eureka:latest ."
+                sh "docker build -t image-eureka:latest ."
             }
         }
 
         stage('Login to Docker Hub') {
             steps {
-                sh "echo \${dockerhub_PSW} | docker login -u \${dockerhub_USR} --password-stdin"
+                sh "echo passwordh | docker login -u hadhemidhifaoui --password-stdin"
             }
         }
 
