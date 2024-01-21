@@ -29,5 +29,9 @@ pipeline {
                 sh "docker push hadhemidhifaoui/image-cours:latest"
             }
         }
+        stage('Run Docker Compose') {
+            steps {
+                sh 'docker-compose up -d'
+            }
     }
 }
